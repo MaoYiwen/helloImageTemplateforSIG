@@ -44,6 +44,7 @@
 					"sudo yum install -y xfsprogs",
 					"sudo mount -a",
 					"sudo df -h",
+			                "sudo mkdir /test/",
 					"sudo useradd -d /test/admin admin",
 					"sudo chmod -R 755 /test/admin"	
                 ]
