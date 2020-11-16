@@ -1,0 +1,71 @@
+{
+    "type": "Microsoft.VirtualMachineImages",
+    "apiVersion": "2019-05-01-preview",
+    "location": "<region1>",
+    "dependsOn": [],
+    "tags": {
+        "imagebuilderTemplate": "AzureImageBuilderSIG",
+        "userIdentity": "enabled"
+            },
+        "identity": {
+            "type": "UserAssigned",
+                    "userAssignedIdentities": {
+                    "<imgBuilderId>": {}
+                        
+                }
+                },
+    
+    "properties": {
+
+        "buildTimeoutInMinutes" : 80,
+
+        "vmProfile": 
+            {
+            "vmSize": "Standard_B2s",
+            "osDiskSizeGB": 30
+            },
+        
+        "source": {
+            "type": "PlatformImage",
+			
+			     "publisher": "OpenLogic",
+                 "offer": "CentOS",
+                 "sku": "7.6",
+                 "version": "latest"
+              
+        },
+        "customize": [
+            {
+                "type": "Shell",
+                "name": "customized operation",
+                "inline": [
+                    "sudo yum -y upgrade",
+                    "sudo yum install -y lrzsz git atop iftop",
+					"sudo yum install -y xfsprogs",
+					"sudo mount -a",
+					"sudo df -h",
+					"sudo useradd -d /test/admin admin",
+					"sudo chmod -R 755 /test/admin"	
+                ]
+            }
+
+
+        ],
+        "distribute": 
+        [
+            {   
+                "type": "SharedImage",
+                "galleryImageId": "/subscriptions/<subscriptionID>/resourceGroups/<rgName>/providers/Microsoft.Compute/galleries/<sharedImageGalName>/images/<imageDefName>",
+                "runOutputName": "<runOutputName>",
+                "artifactTags": {
+                    "source": "azureVmImageBuilder",
+                    "baseosimg": "centos76"
+                },
+                "replicationRegions": [
+                  "<region1>",
+                  "<region2>"
+                ]
+            }
+        ]
+    }
+}
